@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Entradas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-white/10">
+<div class="flex size-12 shrink-0 items-center text-white/90">
+<button id="backBtn" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+</div>
+<h2 id="pageTitle" class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Mis Entradas</h2>
+<div class="flex w-12 items-center justify-end">
+<button id="searchBtn" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-transparent text-white/90 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">search</span>
+</button>
+</div>
+</div>
+<!-- Search Bar (Hidden by default) -->
+<div id="searchBar" class="hidden px-4 pb-3 bg-background-light dark:bg-background-dark sticky top-[60px] z-10 border-b border-white/10">
+<div class="relative">
+<input type="text" id="searchInput" placeholder="Buscar entradas..." 
+  class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-primary">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-white/50">search</span>
+</div>
+</div>
+<!-- Spacer -->
+<div class="h-4 bg-background-light dark:bg-background-dark"></div>
+<!-- List of Entries -->
+<div class="flex flex-col gap-1 px-4 mb-20">
+<div id="entriesList">
+<!-- Se llenará dinámicamente -->
+</div>
+<!-- Empty State -->
+<div id="emptyState" class="hidden flex-col items-center justify-center text-center py-24 px-8">
+<span class="material-symbols-outlined text-6xl text-white/30">edit_document</span>
+<h3 class="mt-4 text-lg font-medium text-white">No hay entradas aún</h3>
+<p class="mt-1 text-sm text-[#92adc9]">Presiona el botón '+' para empezar a escribir.</p>
+</div>
+</div>
+<!-- Floating Action Button -->
+<div class="fixed bottom-6 right-6">
+<button id="addEntryBtn" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 w-14 bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+
+<!-- Modal Add/Edit Entry -->
+<div id="entryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div class="bg-background-dark border border-white/20 rounded-xl max-w-2xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+<div class="flex items-center justify-between mb-4">
+<h3 id="entryModalTitle" class="text-white text-xl font-bold">Nueva Entrada</h3>
+<button id="closeEntryModal" class="text-white/60 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-4">
+<div>
+<label class="text-white/80 text-sm font-medium mb-2 block">Título</label>
+<input type="text" id="entryTitle" placeholder="Ej: Notas importantes" 
+  class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+</div>
+<div>
+<label class="text-white/80 text-sm font-medium mb-2 block">Contenido</label>
+<textarea id="entryContent" rows="8" placeholder="Escribe aquí tu entrada..." 
+  class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+</div>
+<div class="flex gap-3 pt-4">
+<button id="cancelEntryBtn" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
+Cancelar
+</button>
+<button id="saveEntryBtn" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+Guardar
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal Delete Confirmation -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div class="bg-background-dark border border-white/20 rounded-xl max-w-md w-full p-6 shadow-xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-red-500 text-3xl">warning</span>
+<h3 class="text-white text-xl font-bold">Eliminar Entrada</h3>
+</div>
+<p class="text-white/80 mb-6">¿Estás seguro de que deseas eliminar esta entrada? Esta acción no se puede deshacer.</p>
+<div class="flex gap-3">
+<button id="cancelDeleteBtn" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
+Cancelar
+</button>
+<button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+Eliminar
+</button>
+</div>
+</div>
+</div>
+
+<script src="app.js"></script>
+<script src="entries.js"></script>
+</div>
+</body>
+</html>

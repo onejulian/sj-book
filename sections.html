@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mis Secciones</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-dark text-white group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-10 bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="flex size-12 shrink-0 items-center justify-start">
+<button id="menuBtn" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white text-2xl">menu</span>
+</button>
+</div>
+<h1 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Mis Secciones</h1>
+<div class="flex w-12 items-center justify-end">
+<button id="searchBtn" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 w-12 bg-transparent text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<span class="material-symbols-outlined text-white text-2xl">search</span>
+</button>
+</div>
+</div>
+<!-- Search Bar (Hidden by default) -->
+<div id="searchBar" class="hidden px-4 pb-3">
+<div class="relative">
+<input type="text" id="searchInput" placeholder="Buscar secciones..." 
+  class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-primary">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-white/50">search</span>
+</div>
+</div>
+</header>
+<!-- Main Content: List of Sections -->
+<main class="flex-1 px-4 py-4">
+<div id="sectionsList" class="flex flex-col gap-2">
+<!-- Se llenará dinámicamente -->
+</div>
+<!-- Empty State -->
+<div id="emptyState" class="hidden flex-col items-center justify-center text-center mt-20 px-6 py-12 bg-white/5 rounded-xl">
+<span class="material-symbols-outlined text-primary text-6xl mb-4">note_stack</span>
+<h3 class="text-white text-lg font-bold">Aún no tienes secciones</h3>
+<p class="text-white/60 mt-1 max-w-xs">¡Crea la primera usando el botón '+' para empezar a organizar tus notas!</p>
+</div>
+</main>
+<!-- Floating Action Button -->
+<div class="sticky bottom-0 right-0 p-5 flex justify-end">
+<button id="addSectionBtn" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-16 w-16 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-200">
+<span class="material-symbols-outlined text-white text-3xl">add</span>
+</button>
+</div>
+
+<!-- Modal About -->
+<div id="aboutModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div class="bg-background-dark border border-white/20 rounded-xl max-w-md w-full p-6 shadow-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-white text-xl font-bold">Acerca de</h3>
+<button id="closeAboutModal" class="text-white/60 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-4xl">book</span>
+<div>
+<h4 class="text-white font-medium">Cuaderno Digital</h4>
+<p class="text-white/60 text-sm">Versión 1.0</p>
+</div>
+</div>
+<p class="text-white/80 text-sm leading-relaxed">
+Tu cuaderno digital personal para organizar ideas, notas y pensamientos. 
+Crea secciones para categorizar tus contenidos, páginas para agrupar temas relacionados, 
+y entradas para capturar tus ideas.
+</p>
+<div class="border-t border-white/10 pt-4">
+<h4 class="text-white font-medium mb-2">Características</h4>
+<ul class="text-white/80 text-sm space-y-1">
+<li>✓ Organización jerárquica (Secciones → Páginas → Entradas)</li>
+<li>✓ Búsqueda rápida en todos los niveles</li>
+<li>✓ Almacenamiento local (sin necesidad de internet)</li>
+<li>✓ Interfaz moderna y oscura</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal Add/Edit Section -->
+<div id="sectionModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div class="bg-background-dark border border-white/20 rounded-xl max-w-md w-full p-6 shadow-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 id="sectionModalTitle" class="text-white text-xl font-bold">Nueva Sección</h3>
+<button id="closeSectionModal" class="text-white/60 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-4">
+<div>
+<label class="text-white/80 text-sm font-medium mb-2 block">Nombre de la Sección</label>
+<input type="text" id="sectionName" placeholder="Ej: Mis Ideas" 
+  class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+</div>
+<div>
+<label class="text-white/80 text-sm font-medium mb-2 block">Icono</label>
+<div class="grid grid-cols-6 gap-2">
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="lightbulb">
+<span class="material-symbols-outlined text-white">lightbulb</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="business_center">
+<span class="material-symbols-outlined text-white">business_center</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="auto_stories">
+<span class="material-symbols-outlined text-white">auto_stories</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="favorite">
+<span class="material-symbols-outlined text-white">favorite</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="code">
+<span class="material-symbols-outlined text-white">code</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="school">
+<span class="material-symbols-outlined text-white">school</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="fitness_center">
+<span class="material-symbols-outlined text-white">fitness_center</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="palette">
+<span class="material-symbols-outlined text-white">palette</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="restaurant">
+<span class="material-symbols-outlined text-white">restaurant</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="travel_explore">
+<span class="material-symbols-outlined text-white">travel_explore</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="shopping_cart">
+<span class="material-symbols-outlined text-white">shopping_cart</span>
+</button>
+<button class="icon-btn p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors" data-icon="home">
+<span class="material-symbols-outlined text-white">home</span>
+</button>
+</div>
+</div>
+<div class="flex gap-3 pt-4">
+<button id="cancelSectionBtn" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
+Cancelar
+</button>
+<button id="saveSectionBtn" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+Guardar
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal Delete Confirmation -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div class="bg-background-dark border border-white/20 rounded-xl max-w-md w-full p-6 shadow-xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-red-500 text-3xl">warning</span>
+<h3 class="text-white text-xl font-bold">Eliminar Sección</h3>
+</div>
+<p class="text-white/80 mb-6">¿Estás seguro de que deseas eliminar esta sección? Se eliminarán todas las páginas y entradas asociadas. Esta acción no se puede deshacer.</p>
+<div class="flex gap-3">
+<button id="cancelDeleteBtn" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
+Cancelar
+</button>
+<button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+Eliminar
+</button>
+</div>
+</div>
+</div>
+
+<script src="app.js"></script>
+<script src="sections.js"></script>
+</div>
+</body>
+</html>
