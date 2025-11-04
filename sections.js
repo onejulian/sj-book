@@ -2,6 +2,7 @@
 let selectedIcon = 'lightbulb';
 let editingSectionId = null;
 let deletingSectionId = null;
+let pendingImportData = null;
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,8 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Configurar event listeners
 function setupEventListeners() {
-  // Botón menú (About)
-  document.getElementById('menuBtn').addEventListener('click', openAboutModal);
+  // Botón menú (toggle dropdown)
+  document.getElementById('menuBtn').addEventListener('click', toggleMenuDropdown);
+  
+  // Cerrar dropdown al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDropdown = document.getElementById('menuDropdown');
+    if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+      menuDropdown.classList.add('hidden');
+    }
+  });
+  
+  // Opciones del menú
+  document.getElementById('exportDataBtn').addEventListener('click', exportData);
+  document.getElementById('importDataBtn').addEventListener('click', triggerImport);
+  document.getElementById('aboutBtn').addEventListener('click', () => {
+    closeMenuDropdown();
+    openAboutModal();
+  });
+  
+  // File input
+  document.getElementById('fileInput').addEventListener('change', handleFileSelect);
   
   // Búsqueda
   document.getElementById('searchBtn').addEventListener('click', toggleSearch);
@@ -54,6 +75,19 @@ function setupEventListeners() {
   document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
   document.getElementById('deleteModal').addEventListener('click', (e) => {
     if (e.target.id === 'deleteModal') closeDeleteModal();
+  });
+  
+  // Modal importar
+  document.getElementById('cancelImportBtn').addEventListener('click', closeImportModal);
+  document.getElementById('confirmImportBtn').addEventListener('click', confirmImport);
+  document.getElementById('importModal').addEventListener('click', (e) => {
+    if (e.target.id === 'importModal') closeImportModal();
+  });
+  
+  // Modal error importar
+  document.getElementById('closeErrorBtn').addEventListener('click', closeImportErrorModal);
+  document.getElementById('importErrorModal').addEventListener('click', (e) => {
+    if (e.target.id === 'importErrorModal') closeImportErrorModal();
   });
 }
 
@@ -247,5 +281,139 @@ function confirmDelete() {
     closeDeleteModal();
     renderSections();
   }
+}
+
+// Menu Dropdown
+function toggleMenuDropdown() {
+  const dropdown = document.getElementById('menuDropdown');
+  dropdown.classList.toggle('hidden');
+}
+
+function closeMenuDropdown() {
+  document.getElementById('menuDropdown').classList.add('hidden');
+}
+
+// Exportar datos
+function exportData() {
+  closeMenuDropdown();
+  
+  const data = StorageManager.getData();
+  const dataStr = JSON.stringify(data, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  a.download = `cuaderno-digital-backup-${timestamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Importar datos
+function triggerImport() {
+  closeMenuDropdown();
+  document.getElementById('fileInput').click();
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const data = JSON.parse(event.target.result);
+      
+      // Validar estructura
+      if (validateImportData(data)) {
+        pendingImportData = data;
+        openImportModal();
+      } else {
+        openImportErrorModal();
+      }
+    } catch (error) {
+      openImportErrorModal();
+    }
+    
+    // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
+    e.target.value = '';
+  };
+  
+  reader.readAsText(file);
+}
+
+function validateImportData(data) {
+  // Verificar que sea un objeto
+  if (!data || typeof data !== 'object') {
+    return false;
+  }
+  
+  // Verificar que tenga la propiedad sections
+  if (!Array.isArray(data.sections)) {
+    return false;
+  }
+  
+  // Validar estructura de cada sección
+  for (const section of data.sections) {
+    // Verificar propiedades básicas de sección
+    if (!section.id || typeof section.name !== 'string') {
+      return false;
+    }
+    
+    // Verificar que pages sea un array (puede estar vacío)
+    if (!Array.isArray(section.pages)) {
+      return false;
+    }
+    
+    // Validar estructura de cada página
+    for (const page of section.pages) {
+      if (!page.id || typeof page.name !== 'string') {
+        return false;
+      }
+      
+      // Verificar que entries sea un array (puede estar vacío)
+      if (!Array.isArray(page.entries)) {
+        return false;
+      }
+      
+      // Validar estructura de cada entrada
+      for (const entry of page.entries) {
+        if (!entry.id || typeof entry.title !== 'string' || typeof entry.content !== 'string') {
+          return false;
+        }
+      }
+    }
+  }
+  
+  return true;
+}
+
+// Modales de importación
+function openImportModal() {
+  document.getElementById('importModal').classList.remove('hidden');
+}
+
+function closeImportModal() {
+  document.getElementById('importModal').classList.add('hidden');
+  pendingImportData = null;
+}
+
+function confirmImport() {
+  if (pendingImportData) {
+    StorageManager.saveData(pendingImportData);
+    closeImportModal();
+    renderSections();
+  }
+}
+
+function openImportErrorModal() {
+  document.getElementById('importErrorModal').classList.remove('hidden');
+}
+
+function closeImportErrorModal() {
+  document.getElementById('importErrorModal').classList.add('hidden');
 }
 
