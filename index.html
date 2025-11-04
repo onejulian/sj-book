@@ -488,10 +488,23 @@
 <!-- Hidden file input for import -->
 <input type="file" id="fileInput" accept=".json" class="hidden">
 
+<!-- Menú Contextual (para móviles) -->
+<div id="contextMenu" class="hidden fixed z-50 bg-background-dark border border-white/20 rounded-xl shadow-xl overflow-hidden min-w-[160px]">
+  <button id="contextEditBtn" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left">
+    <span class="material-symbols-outlined text-primary text-xl">edit</span>
+    <span class="text-white text-sm">Editar</span>
+  </button>
+  <button id="contextDeleteBtn" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left border-t border-white/10">
+    <span class="material-symbols-outlined text-red-500 text-xl">delete</span>
+    <span class="text-white text-sm">Eliminar</span>
+  </button>
+</div>
+
 <!-- Core modules -->
 <script src="core/storage.js"></script>
 <script src="core/utils.js"></script>
 <script src="core/navigation.js"></script>
+<script src="core/context-menu.js"></script>
 
 <!-- View modules -->
 <script src="views/sections.js"></script>

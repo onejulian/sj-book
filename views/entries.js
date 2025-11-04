@@ -85,6 +85,7 @@ class EntriesView {
     const div = document.createElement('div');
     div.id = `entry-${entry.id}`;
     div.className = 'flex flex-col gap-3 bg-background-light dark:bg-background-dark p-4 rounded-lg hover:bg-primary/10 transition-colors group border border-white/10';
+    div.dataset.entryId = entry.id;
     
     div.innerHTML = `
       <div class="flex items-start gap-4 justify-between">
@@ -97,7 +98,7 @@ class EntriesView {
             <p class="text-[#92adc9] text-sm font-normal leading-normal">Modificado: ${Utils.formatDate(entry.lastModified)}</p>
           </div>
         </div>
-        <div class="shrink-0 flex gap-2">
+        <div class="shrink-0 hidden md:flex gap-2">
           <button onclick="EntriesView.editEntry('${entry.id}')" class="text-primary font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-opacity">
             Editar
           </button>
@@ -112,6 +113,14 @@ ${Utils.escapeHtml(entry.content)}
         </p>
       </div>
     `;
+    
+    // Configurar long press para móviles
+    ContextMenu.setupLongPress(
+      div,
+      entry.id,
+      (id) => this.editEntry(id),
+      (id) => this.openDeleteModal(id)
+    );
     
     return div;
   }

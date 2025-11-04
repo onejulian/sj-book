@@ -123,6 +123,7 @@ class SectionsView {
   static createSectionElement(section, totalEntries) {
     const div = document.createElement('div');
     div.className = 'flex items-center gap-4 bg-background-dark/50 p-3 rounded-xl min-h-[72px] justify-between cursor-pointer hover:bg-white/5 transition-colors duration-200 group';
+    div.dataset.sectionId = section.id;
     
     div.innerHTML = `
       <div class="flex items-center gap-4 flex-1" onclick="NavigationManager.goToPages('${section.id}')">
@@ -136,7 +137,7 @@ class SectionsView {
       </div>
       <div class="shrink-0 flex items-center gap-2">
         <p class="text-white/60 text-sm font-normal leading-normal">${Utils.formatDate(section.lastModified)}</p>
-        <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+        <div class="hidden md:flex opacity-0 group-hover:opacity-100 transition-opacity gap-1">
           <button onclick="event.stopPropagation(); SectionsView.editSection('${section.id}')" class="p-2 hover:bg-white/10 rounded-lg">
             <span class="material-symbols-outlined text-primary text-xl">edit</span>
           </button>
@@ -146,6 +147,14 @@ class SectionsView {
         </div>
       </div>
     `;
+    
+    // Configurar long press para móviles
+    ContextMenu.setupLongPress(
+      div,
+      section.id,
+      (id) => this.editSection(id),
+      (id) => this.openDeleteModal(id)
+    );
     
     return div;
   }

@@ -85,6 +85,7 @@ class PagesView {
   static createPageElement(page) {
     const div = document.createElement('div');
     div.className = 'flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between hover:bg-white/5 dark:hover:bg-white/5 transition-colors rounded-lg group';
+    div.dataset.pageId = page.id;
     
     const entryCount = page.entries ? page.entries.length : 0;
     
@@ -102,7 +103,7 @@ class PagesView {
         <div class="text-slate-500 dark:text-slate-500 flex size-7 items-center justify-center">
           <span class="material-symbols-outlined text-2xl">arrow_forward_ios</span>
         </div>
-        <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 ml-2">
+        <div class="hidden md:flex opacity-0 group-hover:opacity-100 transition-opacity gap-1 ml-2">
           <button onclick="event.stopPropagation(); PagesView.editPage('${page.id}')" class="p-2 hover:bg-white/10 rounded-lg">
             <span class="material-symbols-outlined text-primary text-xl">edit</span>
           </button>
@@ -112,6 +113,14 @@ class PagesView {
         </div>
       </div>
     `;
+    
+    // Configurar long press para móviles
+    ContextMenu.setupLongPress(
+      div,
+      page.id,
+      (id) => this.editPage(id),
+      (id) => this.openDeleteModal(id)
+    );
     
     return div;
   }

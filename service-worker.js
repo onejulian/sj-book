@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cuaderno-digital-v2.1.0';
+const CACHE_NAME = 'cuaderno-digital-v2.2.0';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -6,6 +6,7 @@ const urlsToCache = [
   '/core/storage.js',
   '/core/utils.js',
   '/core/navigation.js',
+  '/core/context-menu.js',
   '/views/sections.js',
   '/views/pages.js',
   '/views/entries.js',

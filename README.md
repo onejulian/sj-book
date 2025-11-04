@@ -96,9 +96,16 @@ Luego abre `http://localhost:8000` en tu navegador.
 - **Nueva Entrada**: Entra a una página → Botón (+) → Escribe título y contenido
 
 ### Editar o Eliminar
+
+**En Desktop:**
 - Pasa el mouse sobre cualquier elemento
 - Aparecerán botones de **Editar** y **Eliminar**
 - Los cambios se guardan automáticamente
+
+**En Móvil/Tablet:**
+- Mantén presionado un elemento por 0.5 segundos
+- Aparecerá un menú contextual con opciones de Editar y Eliminar
+- Sentirás una pequeña vibración cuando el menú se active
 
 ### Buscar
 - Haz clic en el icono de búsqueda (🔍) en cualquier pantalla
@@ -174,6 +181,7 @@ Luego abre `http://localhost:8000` en tu navegador.
 - `core/storage.js` - Gestión de almacenamiento en localStorage (StorageManager)
 - `core/utils.js` - Utilidades generales (formateo de fechas, validaciones, etc.)
 - `core/navigation.js` - Sistema de navegación SPA basado en hash
+- `core/context-menu.js` - Menú contextual con long-press para móviles
 
 #### Views (Vistas de la aplicación)
 - `views/sections.js` - Vista y lógica de secciones
@@ -188,7 +196,11 @@ Luego abre `http://localhost:8000` en tu navegador.
 
 ## 🎯 Versión
 
-**v2.1** - Arquitectura Modular
+**v2.2** - Optimización Móvil
+- ✅ **Vista móvil mejorada** con menú contextual long-press
+- ✅ Editor inline para entradas (sin modales)
+- ✅ Botones ocultos en móvil, visibles en desktop
+- ✅ Vibración háptica al mantener presionado
 - ✅ Código organizado en módulos independientes (core/ y views/)
 - ✅ Arquitectura SPA moderna con navegación fluida
 - ✅ Mejor mantenibilidad y escalabilidad del código
@@ -199,7 +211,7 @@ Luego abre `http://localhost:8000` en tu navegador.
 - ✅ Funcionamiento offline
 - ✅ Service Worker optimizado
 - ✅ Navegación basada en hash sin recargas de página
-- ✅ Separación clara de responsabilidades
+- ✅ Barras superiores sticky con efecto blur
 
 ---
 
