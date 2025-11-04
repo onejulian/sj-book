@@ -87,28 +87,32 @@ class EntriesView {
 
   static createEntryElement(entry) {
     const div = document.createElement('div');
-    div.className = 'flex gap-4 bg-background-light dark:bg-background-dark py-3 justify-between items-center rounded-lg hover:bg-primary/10 transition-colors group';
+    div.className = 'flex flex-col gap-3 bg-background-light dark:bg-background-dark p-4 rounded-lg hover:bg-primary/10 transition-colors group border border-white/10';
     
     div.innerHTML = `
-      <div class="flex items-start gap-4 flex-grow">
-        <div class="text-white/60 flex items-center justify-center rounded-lg shrink-0 size-12 group-hover:text-white/90">
-          <span class="material-symbols-outlined text-2xl">description</span>
+      <div class="flex items-start gap-4 justify-between">
+        <div class="flex items-start gap-4 flex-grow">
+          <div class="text-white/60 flex items-center justify-center rounded-lg shrink-0 size-12 group-hover:text-white/90">
+            <span class="material-symbols-outlined text-2xl">description</span>
+          </div>
+          <div class="flex flex-1 flex-col">
+            <p class="text-white text-lg font-semibold leading-tight mb-1">${Utils.escapeHtml(entry.title)}</p>
+            <p class="text-[#92adc9] text-sm font-normal leading-normal">Modificado: ${Utils.formatDate(entry.lastModified)}</p>
+          </div>
         </div>
-        <div class="flex flex-1 flex-col justify-center">
-          <p class="text-white text-base font-medium leading-normal">${Utils.escapeHtml(entry.title)}</p>
-          <p class="text-[#92adc9] text-sm font-normal leading-normal">Modificado: ${Utils.formatDate(entry.lastModified)}</p>
-          <p class="text-[#92adc9] text-sm font-normal leading-normal line-clamp-2 mt-1">
-            ${Utils.escapeHtml(entry.content)}
-          </p>
+        <div class="shrink-0 flex gap-2">
+          <button onclick="EntriesView.editEntry('${entry.id}')" class="text-primary font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            Editar
+          </button>
+          <button onclick="EntriesView.openDeleteModal('${entry.id}')" class="text-red-500 font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            Eliminar
+          </button>
         </div>
       </div>
-      <div class="shrink-0 pr-2 flex gap-2">
-        <button onclick="EntriesView.editEntry('${entry.id}')" class="text-primary font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-          Editar
-        </button>
-        <button onclick="EntriesView.openDeleteModal('${entry.id}')" class="text-red-500 font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-          Eliminar
-        </button>
+      <div class="pl-16">
+        <p class="text-white/90 text-base font-normal leading-relaxed whitespace-pre-wrap">
+${Utils.escapeHtml(entry.content)}
+        </p>
       </div>
     `;
     
