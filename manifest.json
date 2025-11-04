@@ -64,7 +64,7 @@
       "name": "Nueva Entrada",
       "short_name": "Nueva",
       "description": "Crear una nueva entrada rápidamente",
-      "url": "/sections.html",
+      "url": "/#sections",
       "icons": [
         {
           "src": "public/icons/icon-96x96.png",

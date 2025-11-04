@@ -164,17 +164,9 @@ Luego abre `http://localhost:8000` en tu navegador.
 
 ## 📝 Archivos del Proyecto
 
-### HTML
-- `index.html` - Pantalla de bienvenida
-- `sections.html` - Vista de secciones
-- `pages.html` - Vista de páginas
-- `entries.html` - Vista de entradas
-
-### JavaScript
-- `app.js` - Lógica central y gestión de almacenamiento
-- `sections.js` - Funcionalidad de secciones
-- `pages.js` - Funcionalidad de páginas
-- `entries.js` - Funcionalidad de entradas
+### Single Page Application (SPA)
+- `index.html` - Aplicación completa con todas las vistas integradas
+- `app.js` - Lógica completa de la aplicación (gestión de almacenamiento, navegación, y todas las funcionalidades)
 - `pwa-installer.js` - Gestor de instalación PWA
 
 ### PWA
@@ -184,14 +176,16 @@ Luego abre `http://localhost:8000` en tu navegador.
 
 ## 🎯 Versión
 
-**v1.1** - Versión con PWA completa
+**v2.0** - Single Page Application (SPA)
+- ✅ Arquitectura SPA moderna con navegación fluida
 - ✅ CRUD completo (Crear, Leer, Actualizar, Eliminar)
 - ✅ Búsqueda en todos los niveles
 - ✅ Importación/Exportación de datos
 - ✅ PWA instalable
 - ✅ Funcionamiento offline
-- ✅ Service Worker para caché
-- ✅ Instalación desde menú hamburguesa
+- ✅ Service Worker optimizado
+- ✅ Navegación basada en hash sin recargas de página
+- ✅ Mejor rendimiento y experiencia de usuario
 
 ---
 
