@@ -495,8 +495,20 @@
 <!-- Hidden file input for import -->
 <input type="file" id="fileInput" accept=".json" class="hidden">
 
+<!-- Core modules -->
+<script src="core/storage.js"></script>
+<script src="core/utils.js"></script>
+<script src="core/navigation.js"></script>
+
+<!-- View modules -->
+<script src="views/sections.js"></script>
+<script src="views/pages.js"></script>
+<script src="views/entries.js"></script>
+
+<!-- Main app -->
 <script src="app.js"></script>
 <script src="pwa-installer.js"></script>
+
 <script>
 // Registrar Service Worker
 if ('serviceWorker' in navigator) {

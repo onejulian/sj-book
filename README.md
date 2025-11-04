@@ -166,18 +166,32 @@ Luego abre `http://localhost:8000` en tu navegador.
 
 ### Single Page Application (SPA)
 - `index.html` - Aplicación completa con todas las vistas integradas
-- `app.js` - Lógica completa de la aplicación (gestión de almacenamiento, navegación, y todas las funcionalidades)
-- `pwa-installer.js` - Gestor de instalación PWA
+- `app.js` - Inicializador principal de la aplicación
+
+### Arquitectura Modular
+
+#### Core (Módulos principales)
+- `core/storage.js` - Gestión de almacenamiento en localStorage (StorageManager)
+- `core/utils.js` - Utilidades generales (formateo de fechas, validaciones, etc.)
+- `core/navigation.js` - Sistema de navegación SPA basado en hash
+
+#### Views (Vistas de la aplicación)
+- `views/sections.js` - Vista y lógica de secciones
+- `views/pages.js` - Vista y lógica de páginas
+- `views/entries.js` - Vista y lógica de entradas
 
 ### PWA
 - `manifest.json` - Configuración de la aplicación web
 - `service-worker.js` - Caché y funcionamiento offline
+- `pwa-installer.js` - Gestor de instalación PWA
 - `public/icons/` - Iconos para diferentes dispositivos
 
 ## 🎯 Versión
 
-**v2.0** - Single Page Application (SPA)
+**v2.1** - Arquitectura Modular
+- ✅ Código organizado en módulos independientes (core/ y views/)
 - ✅ Arquitectura SPA moderna con navegación fluida
+- ✅ Mejor mantenibilidad y escalabilidad del código
 - ✅ CRUD completo (Crear, Leer, Actualizar, Eliminar)
 - ✅ Búsqueda en todos los niveles
 - ✅ Importación/Exportación de datos
@@ -185,7 +199,7 @@ Luego abre `http://localhost:8000` en tu navegador.
 - ✅ Funcionamiento offline
 - ✅ Service Worker optimizado
 - ✅ Navegación basada en hash sin recargas de página
-- ✅ Mejor rendimiento y experiencia de usuario
+- ✅ Separación clara de responsabilidades
 
 ---
 

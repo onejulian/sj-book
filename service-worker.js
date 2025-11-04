@@ -1,8 +1,14 @@
-const CACHE_NAME = 'cuaderno-digital-v2.0.0';
+const CACHE_NAME = 'cuaderno-digital-v2.1.0';
 const urlsToCache = [
   '/',
   '/index.html',
   '/app.js',
+  '/core/storage.js',
+  '/core/utils.js',
+  '/core/navigation.js',
+  '/views/sections.js',
+  '/views/pages.js',
+  '/views/entries.js',
   '/pwa-installer.js',
   '/public/favicon/favicon.svg',
   '/public/icons/icon-72x72.png',
