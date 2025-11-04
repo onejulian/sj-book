@@ -25,19 +25,15 @@ class EntriesView {
       this.render(e.target.value);
     });
 
-    // Añadir entrada
+    // Añadir entrada (mostrar editor nuevo)
     document.getElementById('addEntryBtn').addEventListener('click', () => {
-      this.editingEntryId = null;
-      this.openEntryModal();
+      this.showNewEntryEditor();
     });
 
-    // Modal Entrada
-    document.getElementById('closeEntryModal').addEventListener('click', () => this.closeEntryModal());
-    document.getElementById('cancelEntryBtn').addEventListener('click', () => this.closeEntryModal());
-    document.getElementById('saveEntryBtn').addEventListener('click', () => this.saveEntry());
-    document.getElementById('entryModal').addEventListener('click', (e) => {
-      if (e.target.id === 'entryModal') this.closeEntryModal();
-    });
+    // Editor nuevo - Botones
+    document.getElementById('cancelNewEntry').addEventListener('click', () => this.hideNewEntryEditor());
+    document.getElementById('cancelNewEntryBtn').addEventListener('click', () => this.hideNewEntryEditor());
+    document.getElementById('saveNewEntryBtn').addEventListener('click', () => this.saveNewEntry());
 
     // Modal eliminar
     document.getElementById('cancelDeleteEntryBtn').addEventListener('click', () => this.closeDeleteModal());
@@ -71,7 +67,7 @@ class EntriesView {
     
     container.innerHTML = '';
     
-    if (entries.length === 0) {
+    if (entries.length === 0 && !filter) {
       emptyState.classList.remove('hidden');
       emptyState.classList.add('flex');
     } else {
@@ -87,6 +83,7 @@ class EntriesView {
 
   static createEntryElement(entry) {
     const div = document.createElement('div');
+    div.id = `entry-${entry.id}`;
     div.className = 'flex flex-col gap-3 bg-background-light dark:bg-background-dark p-4 rounded-lg hover:bg-primary/10 transition-colors group border border-white/10';
     
     div.innerHTML = `
@@ -119,6 +116,39 @@ ${Utils.escapeHtml(entry.content)}
     return div;
   }
 
+  static createEditEntryElement(entry) {
+    const div = document.createElement('div');
+    div.id = `entry-editor-${entry.id}`;
+    div.className = 'flex flex-col gap-3 bg-background-dark p-4 rounded-lg border-2 border-primary shadow-lg';
+    
+    div.innerHTML = `
+      <div class="flex items-center justify-between">
+        <h3 class="text-white text-lg font-semibold">Editar Entrada</h3>
+        <button onclick="EntriesView.cancelEditEntry('${entry.id}')" class="text-white/60 hover:text-white">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div>
+        <input type="text" id="editEntryTitle-${entry.id}" value="${Utils.escapeHtml(entry.title)}" 
+          class="w-full bg-white/10 text-white text-lg font-semibold placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+      </div>
+      <div>
+        <textarea id="editEntryContent-${entry.id}" rows="8" 
+          class="w-full bg-white/10 text-white text-base placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none">${Utils.escapeHtml(entry.content)}</textarea>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="EntriesView.cancelEditEntry('${entry.id}')" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
+          Cancelar
+        </button>
+        <button onclick="EntriesView.saveEditEntry('${entry.id}')" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+          Guardar
+        </button>
+      </div>
+    `;
+    
+    return div;
+  }
+
   // Búsqueda
   static toggleSearch() {
     const searchBar = document.getElementById('entriesSearchBar');
@@ -134,67 +164,119 @@ ${Utils.escapeHtml(entry.content)}
     }
   }
 
-  // Modal Entrada
-  static openEntryModal() {
-    const modal = document.getElementById('entryModal');
-    const title = document.getElementById('entryModalTitle');
-    const titleInput = document.getElementById('entryTitle');
-    const contentInput = document.getElementById('entryContent');
+  // Editor Nuevo
+  static showNewEntryEditor() {
+    const editor = document.getElementById('entryEditorNew');
+    editor.classList.remove('hidden');
+    editor.classList.add('flex');
     
-    if (this.editingEntryId) {
-      const section = StorageManager.getSection(this.currentSectionId);
-      const page = section.pages.find(p => p.id === this.currentPageId);
-      const entry = page.entries.find(e => e.id === this.editingEntryId);
-      
-      title.textContent = 'Editar Entrada';
-      titleInput.value = entry.title;
-      contentInput.value = entry.content;
-    } else {
-      title.textContent = 'Nueva Entrada';
-      titleInput.value = '';
-      contentInput.value = '';
-    }
+    // Limpiar campos
+    document.getElementById('newEntryTitle').value = '';
+    document.getElementById('newEntryContent').value = '';
     
-    modal.classList.remove('hidden');
-    titleInput.focus();
+    // Hacer scroll al editor y enfocar
+    editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => {
+      document.getElementById('newEntryTitle').focus();
+    }, 300);
   }
 
-  static closeEntryModal() {
-    document.getElementById('entryModal').classList.add('hidden');
-    this.editingEntryId = null;
+  static hideNewEntryEditor() {
+    const editor = document.getElementById('entryEditorNew');
+    editor.classList.add('hidden');
+    editor.classList.remove('flex');
   }
 
-  static saveEntry() {
-    const titleInput = document.getElementById('entryTitle');
-    const contentInput = document.getElementById('entryContent');
+  static saveNewEntry() {
+    const titleInput = document.getElementById('newEntryTitle');
+    const contentInput = document.getElementById('newEntryContent');
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
     
     if (!title) {
       alert('Por favor ingresa un título para la entrada');
+      titleInput.focus();
       return;
     }
     
     if (!content) {
       alert('Por favor ingresa contenido para la entrada');
+      contentInput.focus();
       return;
     }
     
-    if (this.editingEntryId) {
-      StorageManager.updateEntry(this.currentSectionId, this.currentPageId, this.editingEntryId, {
-        title,
-        content,
-        lastModified: Date.now()
-      });
-    } else {
-      const newEntry = {
-        id: Utils.generateId(),
-        title,
-        content,
-        lastModified: Date.now()
-      };
-      StorageManager.addEntry(this.currentSectionId, this.currentPageId, newEntry);
+    const newEntry = {
+      id: Utils.generateId(),
+      title,
+      content,
+      lastModified: Date.now()
+    };
+    
+    StorageManager.addEntry(this.currentSectionId, this.currentPageId, newEntry);
+    StorageManager.updatePage(this.currentSectionId, this.currentPageId, {
+      date: Date.now()
+    });
+    StorageManager.updateSection(this.currentSectionId, {
+      lastModified: Date.now()
+    });
+    
+    this.hideNewEntryEditor();
+    this.render();
+  }
+
+  // Editar Entrada (inline)
+  static editEntry(entryId) {
+    const section = StorageManager.getSection(this.currentSectionId);
+    const page = section.pages.find(p => p.id === this.currentPageId);
+    const entry = page.entries.find(e => e.id === entryId);
+    
+    if (!entry) return;
+    
+    // Obtener el elemento de la entrada
+    const entryElement = document.getElementById(`entry-${entryId}`);
+    if (!entryElement) return;
+    
+    // Crear el editor
+    const editorElement = this.createEditEntryElement(entry);
+    
+    // Reemplazar la entrada con el editor
+    entryElement.replaceWith(editorElement);
+    
+    // Hacer scroll al editor y enfocar
+    editorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => {
+      document.getElementById(`editEntryTitle-${entryId}`).focus();
+    }, 300);
+  }
+
+  static cancelEditEntry(entryId) {
+    // Volver a renderizar para restaurar la entrada original
+    this.render();
+  }
+
+  static saveEditEntry(entryId) {
+    const titleInput = document.getElementById(`editEntryTitle-${entryId}`);
+    const contentInput = document.getElementById(`editEntryContent-${entryId}`);
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+    
+    if (!title) {
+      alert('Por favor ingresa un título para la entrada');
+      titleInput.focus();
+      return;
     }
+    
+    if (!content) {
+      alert('Por favor ingresa contenido para la entrada');
+      contentInput.focus();
+      return;
+    }
+    
+    StorageManager.updateEntry(this.currentSectionId, this.currentPageId, entryId, {
+      title,
+      content,
+      lastModified: Date.now()
+    });
     
     StorageManager.updatePage(this.currentSectionId, this.currentPageId, {
       date: Date.now()
@@ -203,13 +285,7 @@ ${Utils.escapeHtml(entry.content)}
       lastModified: Date.now()
     });
     
-    this.closeEntryModal();
     this.render();
-  }
-
-  static editEntry(entryId) {
-    this.editingEntryId = entryId;
-    this.openEntryModal();
   }
 
   // Modal Eliminar
@@ -240,4 +316,3 @@ ${Utils.escapeHtml(entry.content)}
 
 // Exponer globalmente
 window.EntriesView = EntriesView;
-

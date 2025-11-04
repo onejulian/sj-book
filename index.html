@@ -209,10 +209,37 @@
   </div>
   
   <!-- List of Entries -->
-  <div class="flex flex-col gap-1 px-4 pt-4 mb-20">
+  <div class="flex flex-col gap-4 px-4 pt-4 mb-20">
+    <!-- Editor Inline (nuevo) -->
+    <div id="entryEditorNew" class="hidden flex-col gap-3 bg-background-dark p-4 rounded-lg border-2 border-primary shadow-lg">
+      <div class="flex items-center justify-between">
+        <h3 class="text-white text-lg font-semibold">Nueva Entrada</h3>
+        <button id="cancelNewEntry" class="text-white/60 hover:text-white">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div>
+        <input type="text" id="newEntryTitle" placeholder="Título de la entrada" 
+          class="w-full bg-white/10 text-white text-lg font-semibold placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+      </div>
+      <div>
+        <textarea id="newEntryContent" rows="8" placeholder="Escribe aquí tu entrada..." 
+          class="w-full bg-white/10 text-white text-base placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+      </div>
+      <div class="flex gap-3">
+        <button id="cancelNewEntryBtn" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
+          Cancelar
+        </button>
+        <button id="saveNewEntryBtn" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+          Guardar
+        </button>
+      </div>
+    </div>
+    
     <div id="entriesList">
       <!-- Se llenará dinámicamente -->
     </div>
+    
     <!-- Empty State -->
     <div id="entriesEmptyState" class="hidden flex-col items-center justify-center text-center py-24 px-8">
       <span class="material-symbols-outlined text-6xl text-white/30">edit_document</span>
@@ -354,38 +381,6 @@
           Cancelar
         </button>
         <button id="savePageBtn" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-          Guardar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Add/Edit Entry -->
-<div id="entryModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-  <div class="bg-background-dark border border-white/20 rounded-xl max-w-2xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-    <div class="flex items-center justify-between mb-4">
-      <h3 id="entryModalTitle" class="text-white text-xl font-bold">Nueva Entrada</h3>
-      <button id="closeEntryModal" class="text-white/60 hover:text-white">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
-    <div class="space-y-4">
-      <div>
-        <label class="text-white/80 text-sm font-medium mb-2 block">Título</label>
-        <input type="text" id="entryTitle" placeholder="Ej: Notas importantes" 
-          class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-      </div>
-      <div>
-        <label class="text-white/80 text-sm font-medium mb-2 block">Contenido</label>
-        <textarea id="entryContent" rows="8" placeholder="Escribe aquí tu entrada..." 
-          class="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
-      </div>
-      <div class="flex gap-3 pt-4">
-        <button id="cancelEntryBtn" class="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
-          Cancelar
-        </button>
-        <button id="saveEntryBtn" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
           Guardar
         </button>
       </div>
