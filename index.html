@@ -3,8 +3,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="description" content="Tu cuaderno digital personal para organizar ideas, notas y pensamientos">
+<meta name="theme-color" content="#137fec">
 <title>Cuaderno Digital</title>
 <link rel="icon" href="public/favicon/favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="public/icons/apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -82,6 +86,19 @@
 </div>
 
 <script>
+  // Registrar Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => {
+          console.log('Service Worker registrado exitosamente:', registration.scope);
+        })
+        .catch((error) => {
+          console.log('Error al registrar Service Worker:', error);
+        });
+    });
+  }
+  
   // Redirigir a sections.html después de un breve momento
   setTimeout(() => {
     window.location.href = 'sections.html';
