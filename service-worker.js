@@ -27,7 +27,9 @@ self.addEventListener('install', (event) => {
         console.log('Error al cachear archivos:', error);
       })
   );
-  self.skipWaiting();
+  
+  // No hacer skipWaiting automáticamente, esperar a que el usuario lo solicite
+  // self.skipWaiting();
 });
 
 // Activación del Service Worker
@@ -81,5 +83,13 @@ self.addEventListener('fetch', (event) => {
         return caches.match('/index.html');
       })
   );
+});
+
+// Escuchar mensajes del cliente
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    // Tomar control inmediatamente
+    self.skipWaiting();
+  }
 });
 

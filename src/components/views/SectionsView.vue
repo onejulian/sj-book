@@ -6,15 +6,32 @@
         <div class="flex size-12 shrink-0 items-center justify-start relative">
           <button 
             @click="toggleMenuDropdown" 
-            class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-white/10 transition-colors"
+            class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-white/10 transition-colors relative"
           >
             <span class="material-symbols-outlined text-white text-2xl">menu</span>
+            <!-- Badge de actualización disponible -->
+            <span 
+              v-if="pwaUpdate.updateAvailable.value" 
+              class="absolute top-1 right-1 w-3 h-3 bg-primary rounded-full border-2 border-background-dark animate-pulse"
+            ></span>
           </button>
           <!-- Dropdown Menu -->
           <div 
             v-show="showMenuDropdown" 
             class="absolute top-14 left-0 bg-background-dark border border-white/20 rounded-xl shadow-xl min-w-[200px] overflow-hidden z-50"
           >
+            <button 
+              v-if="pwaUpdate.updateAvailable.value"
+              @click="applyUpdate" 
+              class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left bg-primary/10"
+            >
+              <span class="material-symbols-outlined text-primary text-xl">update</span>
+              <div class="flex flex-col">
+                <span class="text-white text-sm font-semibold">Actualización disponible</span>
+                <span class="text-white/60 text-xs">Toca para actualizar</span>
+              </div>
+            </button>
+            <div v-if="pwaUpdate.updateAvailable.value" class="border-t border-white/10"></div>
             <button 
               @click="exportData" 
               class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left"
@@ -105,7 +122,7 @@
     <div class="sticky bottom-0 right-0 p-5 flex justify-end">
       <button 
         @click="openSectionModal(null)" 
-        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-16 w-16 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-200"
+        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 w-14 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-200"
       >
         <span class="material-symbols-outlined text-white text-3xl">add</span>
       </button>
@@ -159,6 +176,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useStorage } from '@/composables/useStorage';
 import { useUtils } from '@/composables/useUtils';
 import { usePWAInstaller } from '@/composables/usePWAInstaller';
+import { usePWAUpdate } from '@/composables/usePWAUpdate';
 import SectionItem from '@/components/items/SectionItem.vue';
 import SectionModal from '@/components/modals/SectionModal.vue';
 import AboutModal from '@/components/modals/AboutModal.vue';
@@ -169,6 +187,7 @@ import ImportErrorModal from '@/components/modals/ImportErrorModal.vue';
 const storage = useStorage();
 const utils = useUtils();
 const pwaInstaller = usePWAInstaller();
+const pwaUpdate = usePWAUpdate();
 
 // Estado
 const showMenuDropdown = ref(false);
@@ -364,6 +383,12 @@ const installPWA = async () => {
   await pwaInstaller.install();
 };
 
+// PWA Update
+const applyUpdate = () => {
+  closeMenuDropdown();
+  pwaUpdate.applyUpdate();
+};
+
 // Click outside handler
 const handleClickOutside = (e) => {
   if (showMenuDropdown.value && !e.target.closest('.relative')) {
@@ -374,6 +399,7 @@ const handleClickOutside = (e) => {
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
   pwaInstaller.init();
+  pwaUpdate.init();
 });
 
 onUnmounted(() => {
