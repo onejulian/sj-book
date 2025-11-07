@@ -151,6 +151,7 @@ const startX = ref(0);
 const startY = ref(0);
 const currentX = ref(0);
 const isHorizontalSwipe = ref(false);
+const initialSwipeOffset = ref(0);
 
 const SWIPE_THRESHOLD = 10; // Umbral para determinar si es swipe horizontal o vertical
 const MAX_SWIPE = -160; // Ancho total de los dos botones (80px cada uno)
@@ -183,9 +184,6 @@ const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value;
 };
 
-// Computed para saber si las opciones están abiertas
-const isSwipeOpen = computed(() => swipeOffset.value === MAX_SWIPE);
-
 // Funciones para el swipe
 const handleTouchStart = (e) => {
   if (!isMobile.value) return;
@@ -193,6 +191,7 @@ const handleTouchStart = (e) => {
   startX.value = e.touches[0].clientX;
   startY.value = e.touches[0].clientY;
   currentX.value = startX.value;
+  initialSwipeOffset.value = swipeOffset.value;
   isSwiping.value = true;
   isHorizontalSwipe.value = false;
 };
@@ -221,26 +220,15 @@ const handleTouchMove = (e) => {
   if (isHorizontalSwipe.value) {
     // Prevenir el scroll vertical cuando se hace swipe horizontal
     e.preventDefault();
-    
-    // Si las opciones están completamente abiertas, solo permitir cerrar (deslizar a la derecha)
-    if (isSwipeOpen.value) {
-      if (deltaX > 0) {
-        // Permitir cerrar deslizando a la derecha desde la posición abierta
-        swipeOffset.value = Math.min(0, MAX_SWIPE + deltaX);
-      }
-      // Ignorar intentos de deslizar más a la izquierda cuando ya está abierto
+
+    // Evitar seguir abriendo si ya está completamente abierto
+    if (initialSwipeOffset.value === MAX_SWIPE && deltaX < 0) {
       return;
     }
-    
-    // Solo permitir deslizar a la izquierda (deltaX negativo)
-    if (deltaX < 0) {
-      // Limitar el swipe al máximo permitido
-      swipeOffset.value = Math.max(MAX_SWIPE, deltaX);
-    } else if (swipeOffset.value < 0) {
-      // Permitir cerrar deslizando a la derecha
-      swipeOffset.value = Math.min(0, swipeOffset.value + deltaX - startX.value);
-      startX.value = currentX.value;
-    }
+
+    const nextOffset = Math.min(0, Math.max(MAX_SWIPE, initialSwipeOffset.value + deltaX));
+
+    swipeOffset.value = nextOffset;
   }
 };
 
@@ -252,14 +240,21 @@ const handleTouchEnd = () => {
   if (!isHorizontalSwipe.value) return;
   
   // Decidir si abrir o cerrar completamente
-  if (swipeOffset.value < OPEN_THRESHOLD) {
+  if (initialSwipeOffset.value === MAX_SWIPE) {
+    // Estaba abierto; cerrar solo si se deslizó lo suficiente hacia la derecha
+    if (swipeOffset.value > CLOSE_THRESHOLD) {
+      swipeOffset.value = 0;
+    } else {
+      swipeOffset.value = MAX_SWIPE;
+    }
+  } else if (swipeOffset.value < OPEN_THRESHOLD) {
     // Abrir completamente
     swipeOffset.value = MAX_SWIPE;
   } else {
     // Cerrar
     swipeOffset.value = 0;
   }
-  
+
   isHorizontalSwipe.value = false;
 };
 
