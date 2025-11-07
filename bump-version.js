@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const VERSION_FILE = path.join(__dirname, 'version.js');
+const PACKAGE_JSON_FILE = path.join(__dirname, 'package.json');
 
 /**
  * Incrementa una versión semántica en 0.0.1
@@ -90,6 +91,30 @@ if (typeof self !== 'undefined' && self.importScripts) {
 }
 
 /**
+ * Actualiza la versión en package.json
+ * @param {string} newVersion
+ */
+function updatePackageJsonVersion(newVersion) {
+  try {
+    const packageJsonContent = fs.readFileSync(PACKAGE_JSON_FILE, 'utf8');
+    const packageJson = JSON.parse(packageJsonContent);
+
+    packageJson.version = newVersion;
+
+    fs.writeFileSync(
+      PACKAGE_JSON_FILE,
+      `${JSON.stringify(packageJson, null, 2)}\n`,
+      'utf8'
+    );
+
+    console.log(`✓ package.json actualizado: ${newVersion}`);
+  } catch (error) {
+    console.error('Error al actualizar package.json:', error.message);
+    process.exit(1);
+  }
+}
+
+/**
  * Función principal
  */
 function main() {
@@ -102,6 +127,7 @@ function main() {
   console.log(`Nueva versión: ${newVersion}`);
   
   writeNewVersion(newVersion);
+  updatePackageJsonVersion(newVersion);
   
   console.log('\n✨ ¡Versión incrementada exitosamente!');
 }

@@ -1,6 +1,6 @@
 {
   "name": "cuaderno-digital",
-  "version": "1.0.0",
+  "version": "3.1.4",
   "description": "Tu cuaderno digital personal para organizar ideas, notas y pensamientos",
   "private": true,
   "scripts": {
@@ -34,4 +34,3 @@
     "vue-loader": "^17.4.2"
   }
 }
-
