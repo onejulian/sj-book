@@ -119,7 +119,7 @@
     </main>
     
     <!-- Floating Action Button -->
-    <div class="sticky bottom-0 right-0 p-5 flex justify-end">
+    <div class="sticky bottom-0 right-0 p-6 flex justify-end">
       <button 
         @click="openSectionModal(null)" 
         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 w-14 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all duration-200"

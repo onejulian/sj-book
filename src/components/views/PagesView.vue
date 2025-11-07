@@ -66,7 +66,7 @@
     <div class="fixed bottom-6 right-6">
       <button 
         @click="openPageModal(null)" 
-        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 w-14 shadow-lg bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors"
+        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 w-14 shadow-lg shadow-primary/30 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors"
       >
         <span class="material-symbols-outlined text-3xl">add</span>
       </button>

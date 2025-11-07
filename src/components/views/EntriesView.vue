@@ -113,7 +113,7 @@
     <div class="fixed bottom-6 right-6">
       <button 
         @click="showNewEditorForm" 
-        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 w-14 bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors"
+        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 w-14 bg-primary text-white shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors"
       >
         <span class="material-symbols-outlined text-3xl">add</span>
       </button>
