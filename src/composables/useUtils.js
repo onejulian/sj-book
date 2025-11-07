@@ -1,12 +1,9 @@
-// ==========================================
-// UTILIDADES
-// ==========================================
-class Utils {
-  static generateId() {
+export function useUtils() {
+  const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  }
+  };
 
-  static formatDate(timestamp) {
+  const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     const now = new Date();
     const diffTime = Math.abs(now - date);
@@ -25,17 +22,24 @@ class Utils {
     } else {
       return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     }
-  }
+  };
 
-  static escapeHtml(text) {
+  const escapeHtml = (text) => {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-  }
+  };
 
-  static truncate(text, maxLength) {
+  const truncate = (text, maxLength) => {
     if (text.length <= maxLength) return text;
     return text.substr(0, maxLength) + '...';
-  }
+  };
+
+  return {
+    generateId,
+    formatDate,
+    escapeHtml,
+    truncate,
+  };
 }
 
