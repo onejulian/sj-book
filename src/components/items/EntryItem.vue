@@ -38,7 +38,7 @@
 
   <div 
     v-else
-    class="relative overflow-hidden rounded-lg border border-white/10"
+    class="relative overflow-hidden rounded-lg border border-white/10 mb-2"
   >
     <!-- Botones de acción ocultos (visible al deslizar en móvil) -->
     <div class="absolute right-0 top-0 bottom-0 flex items-stretch md:hidden">
@@ -67,12 +67,24 @@
       @touchend="handleTouchEnd"
     >
       <div class="flex items-start gap-4 justify-between">
-        <div class="flex items-start gap-4 flex-grow">
+        <div class="flex items-start gap-4 flex-grow min-w-0">
           <div class="text-white/60 flex items-center justify-center rounded-lg shrink-0 size-12 group-hover:text-white/90">
             <span class="material-symbols-outlined text-2xl">description</span>
           </div>
-          <div class="flex flex-1 flex-col">
-            <p class="text-white text-lg font-semibold leading-tight mb-1">{{ entry.title }}</p>
+          <div class="flex flex-1 flex-col min-w-0">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <p class="text-white text-lg font-semibold leading-tight flex-1">{{ entry.title }}</p>
+              <button 
+                v-if="isContentLong"
+                @click.stop="toggleExpanded"
+                class="text-white/60 hover:text-white transition-colors shrink-0"
+                :title="isExpanded ? 'Contraer' : 'Expandir'"
+              >
+                <span class="material-symbols-outlined text-xl">
+                  {{ isExpanded ? 'expand_less' : 'expand_more' }}
+                </span>
+              </button>
+            </div>
             <p class="text-[#92adc9] text-sm font-normal leading-normal">
               Modificado: {{ formattedDate }}
             </p>
@@ -94,7 +106,12 @@
         </div>
       </div>
       <div class="pl-4">
-        <p class="text-white/90 text-base font-normal leading-relaxed whitespace-pre-wrap">{{ entry.content }}</p>
+        <p 
+          class="text-white/90 text-base font-normal leading-relaxed whitespace-pre-wrap"
+          :class="{ 'line-clamp-4': !isExpanded && isContentLong }"
+        >
+          {{ entry.content }}
+        </p>
       </div>
     </div>
   </div>
@@ -123,6 +140,9 @@ const itemRef = ref(null);
 const editTitle = ref('');
 const editContent = ref('');
 
+// Estado para expandir/contraer contenido
+const isExpanded = ref(false);
+
 // Estado para el swipe
 const isMobile = ref(false);
 const swipeOffset = ref(0);
@@ -136,8 +156,14 @@ const SWIPE_THRESHOLD = 10; // Umbral para determinar si es swipe horizontal o v
 const MAX_SWIPE = -160; // Ancho total de los dos botones (80px cada uno)
 const OPEN_THRESHOLD = -40; // Cuánto deslizar para que se abra
 const CLOSE_THRESHOLD = -120; // Desde dónde se cierra al soltar
+const CONTENT_LENGTH_THRESHOLD = 300; // Caracteres para considerar contenido largo
 
 const formattedDate = computed(() => utils.formatDate(props.entry.lastModified));
+
+// Determinar si el contenido es largo
+const isContentLong = computed(() => {
+  return props.entry.content.length > CONTENT_LENGTH_THRESHOLD;
+});
 
 const save = () => {
   emit('save', props.entry.id, editTitle.value, editContent.value);
@@ -151,6 +177,10 @@ const handleEdit = (id) => {
 const handleDelete = (id) => {
   closeSwipe();
   emit('delete', id);
+};
+
+const toggleExpanded = () => {
+  isExpanded.value = !isExpanded.value;
 };
 
 // Funciones para el swipe
@@ -239,8 +269,16 @@ watch(() => props.editing, (isEditing) => {
     editTitle.value = props.entry.title;
     editContent.value = props.entry.content;
     closeSwipe();
+  } else {
+    // Resetear el estado de expansión cuando se sale del modo edición
+    isExpanded.value = false;
   }
 }, { immediate: true });
+
+// Resetear expansión cuando cambia la entrada
+watch(() => props.entry.id, () => {
+  isExpanded.value = false;
+});
 
 onMounted(() => {
   checkIfMobile();
