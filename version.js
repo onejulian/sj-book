@@ -1,9 +1,5 @@
 // Esta variable estará disponible globalmente en el Service Worker
-const APP_VERSION = '3.1.1';
-
-if (typeof window !== 'undefined') {
-  window.APP_VERSION = APP_VERSION;
-}
+const APP_VERSION = '3.1.2';
 
 // Para usar en módulos ES6 regulares (si es necesario)
 if (typeof module !== 'undefined' && module.exports) {
