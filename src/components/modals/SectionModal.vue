@@ -30,7 +30,7 @@
               :key="iconName"
               @click="selectedIcon = iconName"
               :class="[
-                'p-3 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors',
+                'p-3 pb-1.5 bg-white/10 rounded-lg hover:bg-primary/20 transition-colors',
                 selectedIcon === iconName ? 'bg-primary/40' : ''
               ]"
             >
