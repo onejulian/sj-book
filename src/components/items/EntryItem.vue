@@ -183,6 +183,9 @@ const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value;
 };
 
+// Computed para saber si las opciones están abiertas
+const isSwipeOpen = computed(() => swipeOffset.value === MAX_SWIPE);
+
 // Funciones para el swipe
 const handleTouchStart = (e) => {
   if (!isMobile.value) return;
@@ -218,6 +221,16 @@ const handleTouchMove = (e) => {
   if (isHorizontalSwipe.value) {
     // Prevenir el scroll vertical cuando se hace swipe horizontal
     e.preventDefault();
+    
+    // Si las opciones están completamente abiertas, solo permitir cerrar (deslizar a la derecha)
+    if (isSwipeOpen.value) {
+      if (deltaX > 0) {
+        // Permitir cerrar deslizando a la derecha desde la posición abierta
+        swipeOffset.value = Math.min(0, MAX_SWIPE + deltaX);
+      }
+      // Ignorar intentos de deslizar más a la izquierda cuando ya está abierto
+      return;
+    }
     
     // Solo permitir deslizar a la izquierda (deltaX negativo)
     if (deltaX < 0) {
