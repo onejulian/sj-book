@@ -1,4 +1,7 @@
-const CACHE_NAME = 'cuaderno-digital-v3.0.4';
+import { VERSION as APP_VERSION } from './version.js';
+
+const VERSION = 'v' + APP_VERSION;
+const CACHE_NAME = 'cuaderno-digital-' + VERSION;
 const urlsToCache = [
   '/',
   '/index.html',

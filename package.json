@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "rspack serve",
     "build": "rspack build",
-    "preview": "serve dist"
+    "preview": "serve dist",
+    "bump-version": "node bump-version.js"
   },
   "keywords": [
     "notebook",
