@@ -53,3 +53,23 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Prevenir selección de texto en dispositivos móviles */
+* {
+  -webkit-user-select: none; /* Safari/Chrome */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+/Edge */
+  user-select: none;         /* Estándar */
+  -webkit-tap-highlight-color: transparent; /* Quita el resaltado en tap */
+  -webkit-touch-callout: none; /* Previene el menú contextual en iOS */
+}
+
+/* Permitir selección solo en elementos donde sea necesario (inputs, textareas) */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
