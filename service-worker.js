@@ -7,6 +7,7 @@ console.log('VERSION', VERSION);
 const urlsToCache = [
   '/',
   '/index.html',
+  '/version.js',
   '/public/favicon/favicon.svg',
   '/public/icons/icon-72x72.png',
   '/public/icons/icon-96x96.png',
