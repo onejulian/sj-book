@@ -15,7 +15,7 @@
           <span class="material-symbols-outlined text-primary text-4xl">book</span>
           <div>
             <h4 class="text-white font-medium">Cuaderno Digital</h4>
-            <p class="text-white/60 text-sm">Versión 1.0</p>
+            <p class="text-white/60 text-sm">Versión {{ appVersion }}</p>
           </div>
         </div>
         <p class="text-white/80 text-sm leading-relaxed">
@@ -38,6 +38,8 @@
 </template>
 
 <script setup>
+const appVersion = typeof window !== 'undefined' && window.APP_VERSION ? window.APP_VERSION : 'N/A';
+
 defineEmits(['close']);
 </script>
 
