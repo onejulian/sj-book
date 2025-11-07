@@ -1,6 +1,27 @@
 # 📓 Cuaderno Digital
 
-Una aplicación web moderna para organizar tus ideas, notas y pensamientos de manera jerárquica y eficiente.
+Una Progressive Web App (PWA) moderna construida con **Vue 3** y **Rspack** para organizar tus ideas, notas y pensamientos de manera jerárquica y eficiente. Funciona completamente offline y respeta tu privacidad al mantener todos los datos en tu dispositivo.
+
+[![Vue 3](https://img.shields.io/badge/Vue-3.4-42b883?style=flat&logo=vue.js)](https://vuejs.org/)
+[![Rspack](https://img.shields.io/badge/Rspack-1.1-1e90ff?style=flat)](https://www.rspack.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![PWA](https://img.shields.io/badge/PWA-Ready-5a0fc8?style=flat)](https://web.dev/progressive-web-apps/)
+
+🌐 **Demo en vivo:** [sj-book.juliandavid.co](https://sj-book.juliandavid.co)
+
+## 📑 Tabla de Contenidos
+
+- [Características](#-características)
+- [Inicio Rápido](#-inicio-rápido)
+- [Uso de la Aplicación](#uso-de-la-aplicación)
+- [Tecnologías](#️-tecnologías)
+- [Estructura de Datos](#-estructura-de-datos)
+- [Privacidad y Seguridad](#-privacidad-y-seguridad)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Desarrollo](#-desarrollo)
+- [Versión Actual](#-versión-actual)
+- [Licencia](#-licencia)
+- [Contribuciones](#-contribuciones)
 
 ## ✨ Características
 
@@ -56,21 +77,43 @@ Una aplicación web moderna para organizar tus ideas, notas y pensamientos de ma
 
 ## 🚀 Inicio Rápido
 
-### Opción 1: Uso Directo (Solo lectura de archivos locales)
-1. Descarga el proyecto
-2. Abre `index.html` en tu navegador
-3. ⚠️ Nota: La PWA no funcionará sin un servidor
+### Requisitos Previos
+- Node.js (v16 o superior)
+- npm o yarn
 
-### Opción 2: Con Servidor Local (Recomendado para PWA)
+### Instalación
+
+1. **Clona el repositorio y instala dependencias:**
 ```bash
-# Usando Python (incluido en el proyecto)
-python server.py
+# Clonar el proyecto
+git clone [url-del-repositorio]
+cd sj-book
 
-# O con Node.js
-npx http-server -p 8000
+# Instalar dependencias
+npm install
+```
 
-# O con PHP
-php -S localhost:8000
+2. **Modo Desarrollo:**
+```bash
+# Inicia el servidor de desarrollo con hot-reload
+npm run dev
+```
+Abre `http://localhost:3000` en tu navegador. Los cambios se reflejarán automáticamente.
+
+3. **Build para Producción:**
+```bash
+# Genera los archivos optimizados en /dist
+npm run build
+
+# Preview del build de producción
+npm run preview
+```
+
+### Uso sin Build (Solo Producción Pre-compilada)
+Si tienes el directorio `dist/` ya generado:
+```bash
+# Sirve la carpeta dist con cualquier servidor HTTP
+npx serve dist -p 8000
 ```
 Luego abre `http://localhost:8000` en tu navegador.
 
@@ -80,8 +123,6 @@ Luego abre `http://localhost:8000` en tu navegador.
 3. Selecciona **"Instalar App"** (solo aparece si la app puede ser instalada)
 4. Confirma la instalación
 5. ¡Listo! La app aparecerá en tu escritorio/pantalla de inicio
-
-📖 **Guía completa de instalación:** Ver [INSTALL.md](INSTALL.md)
 
 **Beneficios de instalar:**
 - ✅ Acceso rápido desde tu escritorio o pantalla de inicio
@@ -114,13 +155,27 @@ Luego abre `http://localhost:8000` en tu navegador.
 
 ## 🛠️ Tecnologías
 
-- HTML5
-- JavaScript (ES6+)
-- Tailwind CSS
-- Material Symbols (iconos)
-- LocalStorage API
-- Service Worker (PWA)
-- Web App Manifest
+### Framework y Build Tools
+- **Vue 3** - Framework progresivo con Composition API
+- **Rspack** - Bundler moderno de alto rendimiento (compatible con Webpack)
+- **Vue Loader** - Compilación de componentes Single File Component (.vue)
+
+### Estilos
+- **Tailwind CSS 3** - Framework CSS utility-first
+- **PostCSS** - Procesamiento de CSS
+- **Autoprefixer** - Compatibilidad automática entre navegadores
+- **@tailwindcss/forms** - Estilos mejorados para formularios
+
+### PWA y Offline
+- **Service Worker** - Funcionalidad offline y caché
+- **Web App Manifest** - Configuración de PWA instalable
+- **LocalStorage API** - Persistencia de datos local
+
+### UI/UX
+- **Material Symbols** - Sistema de iconos de Google
+- **Inter Font** - Tipografía moderna y legible
+- Diseño responsivo mobile-first
+- Menú contextual con long-press para móviles
 
 ## 📋 Estructura de Datos
 
@@ -169,49 +224,217 @@ Luego abre `http://localhost:8000` en tu navegador.
 6. **Limpia regularmente**: Elimina entradas obsoletas para mantener todo organizado
 7. **Funciona offline**: Una vez instalada, puedes usarla sin internet
 
-## 📝 Archivos del Proyecto
+## 📁 Estructura del Proyecto
 
-### Single Page Application (SPA)
-- `index.html` - Aplicación completa con todas las vistas integradas
-- `app.js` - Inicializador principal de la aplicación
+```
+sj-book/
+├── src/
+│   ├── main.js                    # Punto de entrada de la aplicación
+│   ├── App.vue                    # Componente raíz
+│   │
+│   ├── components/                # Componentes Vue
+│   │   ├── ContextMenu.vue        # Menú contextual global
+│   │   │
+│   │   ├── views/                 # Vistas principales
+│   │   │   ├── SectionsView.vue   # Vista de secciones
+│   │   │   ├── PagesView.vue      # Vista de páginas
+│   │   │   └── EntriesView.vue    # Vista de entradas
+│   │   │
+│   │   ├── items/                 # Componentes de lista
+│   │   │   ├── SectionItem.vue    # Item individual de sección
+│   │   │   ├── PageItem.vue       # Item individual de página
+│   │   │   └── EntryItem.vue      # Item individual de entrada
+│   │   │
+│   │   └── modals/                # Modales/Diálogos
+│   │       ├── SectionModal.vue   # Modal para secciones
+│   │       ├── PageModal.vue      # Modal para páginas
+│   │       ├── ImportModal.vue    # Modal de importación
+│   │       ├── ImportErrorModal.vue
+│   │       ├── DeleteModal.vue    # Modal de confirmación
+│   │       └── AboutModal.vue     # Modal de información
+│   │
+│   ├── composables/               # Composables de Vue (lógica reutilizable)
+│   │   ├── useNavigation.js       # Sistema de navegación con hash
+│   │   ├── useStorage.js          # Gestión de localStorage
+│   │   ├── useContextMenu.js      # Lógica de menú contextual
+│   │   ├── usePWAInstaller.js     # Instalación PWA
+│   │   └── useUtils.js            # Utilidades generales
+│   │
+│   └── styles/
+│       └── main.css               # Estilos globales y Tailwind
+│
+├── public/                        # Archivos estáticos
+│   ├── icons/                     # Iconos PWA (varios tamaños)
+│   └── favicon/
+│       └── favicon.svg
+│
+├── dist/                          # Build de producción (generado)
+│
+├── index.html                     # Template HTML
+├── manifest.json                  # Configuración PWA
+├── service-worker.js              # Service Worker para offline
+├── rspack.config.js               # Configuración de Rspack
+├── tailwind.config.js             # Configuración de Tailwind CSS
+├── postcss.config.js              # Configuración de PostCSS
+└── package.json                   # Dependencias y scripts
+```
 
-### Arquitectura Modular
+### Arquitectura
 
-#### Core (Módulos principales)
-- `core/storage.js` - Gestión de almacenamiento en localStorage (StorageManager)
-- `core/utils.js` - Utilidades generales (formateo de fechas, validaciones, etc.)
-- `core/navigation.js` - Sistema de navegación SPA basado en hash
-- `core/context-menu.js` - Menú contextual con long-press para móviles
+**Composables (Composition API):**
+- Lógica reutilizable separada de la UI
+- Estado reactivo compartido entre componentes
+- Patrón moderno de Vue 3
 
-#### Views (Vistas de la aplicación)
-- `views/sections.js` - Vista y lógica de secciones
-- `views/pages.js` - Vista y lógica de páginas
-- `views/entries.js` - Vista y lógica de entradas
+**Componentes:**
+- Single File Components (.vue)
+- Estructura clara: Views → Items → Modals
+- Props y events para comunicación
 
-### PWA
-- `manifest.json` - Configuración de la aplicación web
-- `service-worker.js` - Caché y funcionamiento offline
-- `pwa-installer.js` - Gestor de instalación PWA
-- `public/icons/` - Iconos para diferentes dispositivos
+**Navegación:**
+- Sistema basado en hash (#sections, #pages/:id, #entries/:sectionId/:pageId)
+- Sin recarga de página (SPA)
+- Estado sincronizado con la URL
 
-## 🎯 Versión
+## 👨‍💻 Desarrollo
 
-**v2.2** - Optimización Móvil
-- ✅ **Vista móvil mejorada** con menú contextual long-press
-- ✅ Editor inline para entradas (sin modales)
-- ✅ Botones ocultos en móvil, visibles en desktop
-- ✅ Vibración háptica al mantener presionado
-- ✅ Código organizado en módulos independientes (core/ y views/)
-- ✅ Arquitectura SPA moderna con navegación fluida
-- ✅ Mejor mantenibilidad y escalabilidad del código
-- ✅ CRUD completo (Crear, Leer, Actualizar, Eliminar)
-- ✅ Búsqueda en todos los niveles
-- ✅ Importación/Exportación de datos
-- ✅ PWA instalable
-- ✅ Funcionamiento offline
-- ✅ Service Worker optimizado
-- ✅ Navegación basada en hash sin recargas de página
-- ✅ Barras superiores sticky con efecto blur
+### Scripts Disponibles
+
+```bash
+# Desarrollo con hot-reload
+npm run dev
+
+# Build para producción
+npm run build
+
+# Preview del build (requiere build previo)
+npm run preview
+```
+
+### Guía de Desarrollo
+
+**Agregar una nueva vista:**
+1. Crear componente en `src/components/views/NuevaView.vue`
+2. Agregar ruta en `useNavigation.js`
+3. Importar y usar en `App.vue`
+
+**Crear un composable:**
+1. Crear archivo en `src/composables/useNuevo.js`
+2. Exportar función con `export function useNuevo() { ... }`
+3. Usar estado reactivo con `ref()` y `computed()`
+
+**Estilos:**
+- Tailwind CSS: usar clases utility en templates
+- Estilos globales: agregar en `src/styles/main.css`
+- Configuración de colores: `tailwind.config.js`
+
+**Estructura de componente Vue:**
+```vue
+<template>
+  <!-- HTML con Tailwind -->
+</template>
+
+<script setup>
+// Imports
+import { ref } from 'vue';
+
+// Composables
+const storage = useStorage();
+
+// Estado local
+const localData = ref(null);
+
+// Métodos
+function handleAction() { ... }
+</script>
+```
+
+### Service Worker
+
+El Service Worker se registra automáticamente en `main.js` y cachea los archivos necesarios para funcionamiento offline. Para modificar la estrategia de caché, edita `service-worker.js`.
+
+### Build y Optimización
+
+Rspack genera automáticamente:
+- Archivos con hash para cache busting
+- Code splitting (vendors separado)
+- Assets optimizados
+- Source maps para debugging
+
+### Despliegue
+
+**GitHub Pages:**
+El proyecto incluye configuración para GitHub Pages. El archivo `CNAME` en la raíz y en `dist/` permite usar un dominio personalizado.
+
+**Otros servicios:**
+- **Netlify/Vercel**: Conecta tu repositorio y usa `npm run build` como comando de build y `dist/` como directorio de publicación
+- **Servidor propio**: Copia el contenido de `dist/` a tu servidor web
+
+**Importante:** 
+- El build genera archivos en `dist/`
+- Asegúrate de que el servidor sirva `index.html` para todas las rutas (SPA routing)
+- Los archivos en `public/` se copian automáticamente al build
+
+## 🎯 Versión Actual
+
+**v3.0** - Migración a Vue 3 + Rspack
+
+### Características Principales
+- ✅ **Vue 3 + Composition API** - Framework reactivo moderno
+- ✅ **Rspack Build Tool** - Compilación ultra-rápida
+- ✅ **Arquitectura Composables** - Lógica reutilizable y testeable
+- ✅ **Single File Components** - Componentes Vue organizados
+- ✅ **Tailwind CSS 3** - Diseño utility-first
+- ✅ **PWA Instalable** - Funciona como app nativa
+- ✅ **Offline First** - Service Worker con caché inteligente
+
+### Funcionalidades
+- ✅ **CRUD completo** - Crear, Leer, Actualizar, Eliminar
+- ✅ **Organización jerárquica** - Secciones → Páginas → Entradas
+- ✅ **Búsqueda en tiempo real** - Filtrado instantáneo
+- ✅ **Importación/Exportación** - Backup de datos en JSON
+- ✅ **Menú contextual móvil** - Long-press con vibración háptica
+- ✅ **Navegación hash-based** - SPA sin recargas
+- ✅ **12 iconos personalizables** - Material Symbols
+- ✅ **Tema oscuro** - UI moderna y elegante
+- ✅ **Almacenamiento local** - Privacidad total
+- ✅ **Responsive design** - Optimizado para móvil y desktop
+
+### Mejoras Técnicas
+- ⚡ Hot Module Replacement (HMR) en desarrollo
+- 📦 Code splitting automático
+- 🗜️ Build optimizado y minificado
+- 🎯 Alias de rutas (@/) para imports limpios
+- 🔄 Estado reactivo global con composables
+- 🎨 PostCSS con Autoprefixer
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Si deseas mejorar este proyecto:
+
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+### Ideas para Contribuir
+- 🌍 Internacionalización (i18n)
+- 🔐 Encriptación de datos
+- ☁️ Sincronización en la nube (opcional)
+- 📊 Estadísticas de uso
+- 🎨 Temas personalizables
+- 🔍 Búsqueda avanzada con filtros
+- 📎 Soporte para adjuntar archivos
+- 🏷️ Sistema de etiquetas/tags
+
+## 💬 Soporte
+
+Si encuentras algún error o tienes sugerencias, por favor abre un issue en GitHub.
 
 ---
 
