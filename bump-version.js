@@ -45,7 +45,7 @@ function incrementVersion(version) {
 function getCurrentVersion() {
   try {
     const content = fs.readFileSync(VERSION_FILE, 'utf8');
-    const match = content.match(/export const VERSION = ['"]([^'"]+)['"]/);
+    const match = content.match(/const APP_VERSION = ['"]([^'"]+)['"]/);
     
     if (!match) {
       throw new Error('No se pudo encontrar la versión en version.js');
@@ -64,7 +64,19 @@ function getCurrentVersion() {
  */
 function writeNewVersion(newVersion) {
   try {
-    const content = `export const VERSION = '${newVersion}';\n`;
+    const content = `// Esta variable estará disponible globalmente en el Service Worker
+const APP_VERSION = '${newVersion}';
+
+// Para usar en módulos ES6 regulares (si es necesario)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { VERSION: APP_VERSION };
+}
+
+// Para Service Workers con importScripts
+if (typeof self !== 'undefined' && self.importScripts) {
+  self.APP_VERSION = APP_VERSION;
+}
+`;
     fs.writeFileSync(VERSION_FILE, content, 'utf8');
     console.log(`✓ Versión actualizada: ${newVersion}`);
   } catch (error) {

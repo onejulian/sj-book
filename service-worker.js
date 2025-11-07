@@ -1,7 +1,9 @@
-import { VERSION as APP_VERSION } from './version.js';
+// Importar la versión usando importScripts (compatible con todos los navegadores)
+importScripts('./version.js');
 
-const VERSION = 'v' + APP_VERSION;
+const VERSION = 'v' + self.APP_VERSION;
 const CACHE_NAME = 'cuaderno-digital-' + VERSION;
+console.log('VERSION', VERSION);
 const urlsToCache = [
   '/',
   '/index.html',

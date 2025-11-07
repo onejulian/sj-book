@@ -56,7 +56,8 @@ module.exports = {
       patterns: [
         { from: 'public', to: 'public' },
         { from: 'manifest.json', to: 'manifest.json' },
-        { from: 'service-worker.js', to: 'service-worker.js' }
+        { from: 'service-worker.js', to: 'service-worker.js' },
+        { from: 'version.js', to: 'version.js' }
       ]
     })
   ],
