@@ -1,5 +1,5 @@
 // Esta variable estará disponible globalmente en el Service Worker
-const APP_VERSION = '3.1.4';
+const APP_VERSION = '3.1.5';
 
 if (typeof window !== 'undefined') {
   window.APP_VERSION = APP_VERSION;
