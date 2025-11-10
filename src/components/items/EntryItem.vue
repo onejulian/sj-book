@@ -71,7 +71,7 @@
           <div class="text-white/60 flex items-center justify-center rounded-lg shrink-0 size-12 group-hover:text-white/90">
             <span class="material-symbols-outlined text-2xl">description</span>
           </div>
-          <div class="flex flex-1 flex-col min-w-0">
+          <div class="selectable-entry flex flex-1 flex-col min-w-0">
             <div class="flex items-start justify-between gap-2 mb-1">
               <p class="text-white text-lg font-semibold leading-tight flex-1">{{ entry.title }}</p>
               <button 
@@ -105,7 +105,7 @@
           </button>
         </div>
       </div>
-      <div class="pl-4">
+      <div class="pl-4 selectable-entry">
         <p 
           class="text-white/90 text-base font-normal leading-relaxed whitespace-pre-wrap"
           :class="{ 'line-clamp-4': !isExpanded && isContentLong }"

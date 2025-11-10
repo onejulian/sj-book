@@ -73,3 +73,13 @@ textarea,
   user-select: text;
 }
 
+/* Permitir selección en el texto de las entradas */
+.selectable-entry,
+.selectable-entry * {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+}
+

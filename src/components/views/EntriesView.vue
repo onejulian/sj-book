@@ -1,5 +1,8 @@
 <template>
-  <div class="fixed inset-0 w-full flex flex-col bg-background-light dark:bg-background-dark overflow-x-hidden overflow-y-auto">
+  <div
+    ref="entriesContainer"
+    class="fixed inset-0 w-full flex flex-col bg-background-light dark:bg-background-dark overflow-x-hidden overflow-y-auto"
+  >
     <!-- Top App Bar -->
     <div class="flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-4 pb-2 justify-between sticky top-0 z-10 border-b border-white/10">
       <div class="flex size-12 shrink-0 items-center text-white/90">
@@ -127,11 +130,30 @@
       @close="closeDeleteModal"
       @confirm="confirmDelete"
     />
+
+    <Teleport to="body">
+      <div
+        v-if="showSelectionTooltip"
+        ref="tooltipRef"
+        :style="tooltipStyle"
+        class="fixed z-[60] flex items-center gap-2 rounded-full border border-white/20 bg-background-dark px-4 py-2 text-white shadow-lg backdrop-blur-sm"
+      >
+        <button
+          @mousedown.prevent
+          @click="copySelectedText"
+          class="flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-primary"
+        >
+          <span class="material-symbols-outlined text-base leading-none">content_copy</span>
+          Copiar
+        </button>
+        <span v-if="copyFeedback" class="text-xs text-primary">{{ copyFeedback }}</span>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { useStorage } from '@/composables/useStorage';
 import { useUtils } from '@/composables/useUtils';
 import { useNavigation } from '@/composables/useNavigation';
@@ -163,6 +185,32 @@ const editingEntryId = ref(null);
 const showDeleteModal = ref(false);
 const deletingEntryId = ref(null);
 const newTitleInput = ref(null);
+
+const entriesContainer = ref(null);
+const tooltipRef = ref(null);
+const showSelectionTooltip = ref(false);
+const selectedText = ref('');
+const tooltipPosition = ref({ left: 0, top: 0 });
+const tooltipPlacement = ref('above');
+const copyFeedback = ref('');
+let copyFeedbackTimer = null;
+
+const tooltipStyle = computed(() => {
+  const padding = 12;
+  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+  const constrainedLeft = viewportWidth
+    ? Math.min(viewportWidth - padding, Math.max(padding, tooltipPosition.value.left))
+    : tooltipPosition.value.left;
+  const constrainedTop = Math.max(padding, tooltipPosition.value.top);
+
+  return {
+    left: `${constrainedLeft}px`,
+    top: `${constrainedTop}px`,
+    transform: tooltipPlacement.value === 'above'
+      ? 'translate(-50%, calc(-100% - 12px))'
+      : 'translate(-50%, 12px)'
+  };
+});
 
 // Computed
 const page = computed(() => storage.getPage(props.sectionId, props.pageId));
@@ -297,11 +345,165 @@ const confirmDelete = () => {
   }
 };
 
+const resetCopyFeedbackTimer = () => {
+  if (copyFeedbackTimer) {
+    clearTimeout(copyFeedbackTimer);
+    copyFeedbackTimer = null;
+  }
+};
+
+const hideSelectionTooltip = () => {
+  resetCopyFeedbackTimer();
+  showSelectionTooltip.value = false;
+  selectedText.value = '';
+  tooltipPlacement.value = 'above';
+  copyFeedback.value = '';
+};
+
+const nodeToElement = (node) => {
+  if (!node) return null;
+  const isElementNode = typeof Node !== 'undefined'
+    ? node.nodeType === Node.ELEMENT_NODE
+    : node.nodeType === 1;
+  return isElementNode ? node : node.parentElement || null;
+};
+
+const isNodeWithinEntries = (node) => {
+  const element = nodeToElement(node);
+  if (!entriesContainer.value || !element) return false;
+  return entriesContainer.value.contains(element);
+};
+
+const handleSelectionChange = () => {
+  const selection = typeof window !== 'undefined' ? window.getSelection?.() : null;
+
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+    hideSelectionTooltip();
+    return;
+  }
+
+  const text = selection.toString();
+
+  if (!text || !text.trim()) {
+    hideSelectionTooltip();
+    return;
+  }
+
+  const range = selection.getRangeAt(0);
+
+  if (!isNodeWithinEntries(range.commonAncestorContainer)) {
+    hideSelectionTooltip();
+    return;
+  }
+
+  const ancestorElement = nodeToElement(range.commonAncestorContainer);
+
+  if (ancestorElement && ['INPUT', 'TEXTAREA'].includes(ancestorElement.tagName)) {
+    hideSelectionTooltip();
+    return;
+  }
+
+  if (tooltipRef.value && ancestorElement && tooltipRef.value.contains(ancestorElement)) {
+    return;
+  }
+
+  const rect = range.getBoundingClientRect();
+
+  if (!rect || (!rect.width && !rect.height)) {
+    hideSelectionTooltip();
+    return;
+  }
+
+  selectedText.value = text;
+
+  const centerX = rect.left + rect.width / 2;
+
+  if (rect.top <= 80) {
+    tooltipPlacement.value = 'below';
+    tooltipPosition.value = {
+      left: centerX,
+      top: rect.bottom
+    };
+  } else {
+    tooltipPlacement.value = 'above';
+    tooltipPosition.value = {
+      left: centerX,
+      top: rect.top
+    };
+  }
+
+  showSelectionTooltip.value = true;
+};
+
+const handleScroll = () => {
+  if (showSelectionTooltip.value) {
+    hideSelectionTooltip();
+  }
+};
+
+const copySelectedText = async () => {
+  if (!selectedText.value) return;
+
+  const text = selectedText.value;
+  const canUseClipboardAPI = typeof navigator !== 'undefined' && navigator.clipboard?.writeText;
+
+  try {
+    if (canUseClipboardAPI) {
+      await navigator.clipboard.writeText(text);
+    } else if (typeof document !== 'undefined') {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    } else {
+      throw new Error('Clipboard API no disponible');
+    }
+
+    resetCopyFeedbackTimer();
+    copyFeedback.value = 'Copiado';
+    copyFeedbackTimer = setTimeout(() => {
+      copyFeedback.value = '';
+      hideSelectionTooltip();
+    }, 2000);
+  } catch (error) {
+    console.error('Error al copiar al portapapeles:', error);
+    resetCopyFeedbackTimer();
+    copyFeedback.value = 'No se pudo copiar';
+    copyFeedbackTimer = setTimeout(() => {
+      copyFeedback.value = '';
+    }, 3000);
+  }
+};
+
 // Verificar que la página existe
 watch([() => page.value], ([newPage]) => {
   if (!newPage) {
     navigation.goBack('entries');
   }
 }, { immediate: true });
+
+onMounted(() => {
+  if (typeof document !== 'undefined') {
+    document.addEventListener('selectionchange', handleSelectionChange);
+  }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScroll, true);
+  }
+});
+
+onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('selectionchange', handleSelectionChange);
+  }
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScroll, true);
+  }
+  hideSelectionTooltip();
+});
 </script>
 
