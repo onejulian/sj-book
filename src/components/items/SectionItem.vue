@@ -2,8 +2,9 @@
   <div 
     ref="itemRef"
     class="flex items-center gap-4 bg-background-dark/50 p-3 rounded-xl min-h-[72px] justify-between cursor-pointer hover:bg-white/5 transition-colors duration-200 group"
+    @click="goToPages"
   >
-    <div class="flex items-center gap-4 flex-1" @click="goToPages">
+    <div class="flex items-center gap-4 flex-1">
       <div class="text-white flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-12">
         <span class="material-symbols-outlined text-primary text-2xl">{{ section.icon || 'folder' }}</span>
       </div>

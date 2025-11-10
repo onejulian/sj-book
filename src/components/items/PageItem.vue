@@ -1,9 +1,10 @@
 <template>
   <div 
     ref="itemRef"
-    class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between hover:bg-white/5 dark:hover:bg-white/5 transition-colors rounded-lg group"
+    class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between hover:bg-white/5 dark:hover:bg-white/5 transition-colors rounded-lg group cursor-pointer"
+    @click="goToEntries"
   >
-    <div class="flex items-center gap-4 flex-grow cursor-pointer" @click="goToEntries">
+    <div class="flex items-center gap-4 flex-grow">
       <div class="text-white flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-12">
         <span class="material-symbols-outlined text-primary">article</span>
       </div>
