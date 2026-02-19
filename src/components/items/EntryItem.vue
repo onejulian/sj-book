@@ -43,14 +43,21 @@
     <!-- Botones de acción ocultos (visible al deslizar en móvil) -->
     <div class="absolute right-0 top-0 bottom-0 flex items-stretch md:hidden">
       <button 
+        @click.stop="handleCopy"
+        class="flex items-center justify-center w-16 bg-teal-600 text-white transition-colors"
+        :title="copySuccess ? 'Copiado!' : 'Copiar entrada'"
+      >
+        <span class="material-symbols-outlined text-lg">{{ copySuccess ? 'check_circle' : 'content_copy' }}</span>
+      </button>
+      <button 
         @click.stop="handleEdit(entry.id)" 
-        class="flex items-center justify-center w-20 bg-primary text-white"
+        class="flex items-center justify-center w-16 bg-primary text-white"
       >
         <span class="material-symbols-outlined">edit</span>
       </button>
       <button 
         @click.stop="handleDelete(entry.id)" 
-        class="flex items-center justify-center w-20 bg-red-500 text-white"
+        class="flex items-center justify-center w-16 bg-red-500 text-white"
       >
         <span class="material-symbols-outlined">delete</span>
       </button>
@@ -90,7 +97,15 @@
             </p>
           </div>
         </div>
-        <div class="shrink-0 hidden md:flex gap-2">
+        <div class="shrink-0 hidden md:flex items-center gap-2">
+          <button 
+            @click.stop="handleCopy"
+            class="flex items-center gap-1 text-teal-400 font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-all hover:text-teal-300"
+            :title="copySuccess ? 'Copiado!' : 'Copiar entrada'"
+          >
+            <span class="material-symbols-outlined text-base leading-none">{{ copySuccess ? 'check_circle' : 'content_copy' }}</span>
+            {{ copySuccess ? 'Copiado' : 'Copiar' }}
+          </button>
           <button 
             @click="$emit('edit', entry.id)" 
             class="text-primary font-medium leading-normal text-sm opacity-0 group-hover:opacity-100 transition-opacity"
@@ -132,13 +147,17 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['edit', 'delete', 'save', 'cancel']);
+const emit = defineEmits(['edit', 'delete', 'save', 'cancel', 'copy']);
 
 const utils = useUtils();
 
 const itemRef = ref(null);
 const editTitle = ref('');
 const editContent = ref('');
+
+// Estado para feedback de copia
+const copySuccess = ref(false);
+let copyTimer = null;
 
 // Estado para expandir/contraer contenido
 const isExpanded = ref(false);
@@ -154,7 +173,7 @@ const isHorizontalSwipe = ref(false);
 const initialSwipeOffset = ref(0);
 
 const SWIPE_THRESHOLD = 10; // Umbral para determinar si es swipe horizontal o vertical
-const MAX_SWIPE = -160; // Ancho total de los dos botones (80px cada uno)
+const MAX_SWIPE = -192; // Ancho total de los tres botones (64px cada uno: Copiar + Editar + Eliminar)
 const OPEN_THRESHOLD = -40; // Cuánto deslizar para que se abra
 const CLOSE_THRESHOLD = -120; // Desde dónde se cierra al soltar
 const CONTENT_LENGTH_THRESHOLD = 300; // Caracteres para considerar contenido largo
@@ -168,6 +187,36 @@ const isContentLong = computed(() => {
 
 const save = () => {
   emit('save', props.entry.id, editTitle.value, editContent.value);
+};
+
+const handleCopy = async () => {
+  const text = props.entry.content;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    if (copyTimer) clearTimeout(copyTimer);
+    copySuccess.value = true;
+    copyTimer = setTimeout(() => {
+      copySuccess.value = false;
+      copyTimer = null;
+    }, 2000);
+  } catch (err) {
+    console.error('Error al copiar:', err);
+  }
+
+  // Cerrar el swipe en móvil tras copiar
+  closeSwipe();
 };
 
 const handleEdit = (id) => {
@@ -297,6 +346,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', checkIfMobile);
   document.removeEventListener('click', handleClickOutside);
+  if (copyTimer) clearTimeout(copyTimer);
 });
 </script>
 

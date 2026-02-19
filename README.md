@@ -98,7 +98,7 @@ npm install
 # Inicia el servidor de desarrollo con hot-reload
 npm run dev
 ```
-Abre `http://localhost:3000` en tu navegador. Los cambios se reflejarán automáticamente.
+Abre `http://localhost:3001` en tu navegador. Los cambios se reflejarán automáticamente.
 
 3. **Build para Producción:**
 ```bash
